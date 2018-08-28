@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import org.mozilla.gecko.GeckoVRManager;
+import org.mozilla.geckoview.GeckoSession;
 import org.mozilla.vrbrowser.audio.AudioEngine;
 import org.mozilla.vrbrowser.audio.VRAudioTheme;
 import org.mozilla.vrbrowser.search.SearchEngine;
@@ -176,11 +177,19 @@ public class VRBrowserActivity extends PlatformActivity implements WidgetManager
     @Override
     protected void onPause() {
         mAudioEngine.pauseEngine();
+        GeckoSession current = SessionStore.get().getCurrentSession();
+        if (current != null) {
+            current.setActive(false);
+        }
         super.onPause();
     }
 
     @Override
     protected void onResume() {
+        GeckoSession current = SessionStore.get().getCurrentSession();
+        if (current != null) {
+            current.setActive(true);
+        }
         mAudioEngine.resumeEngine();
         super.onResume();
     }
