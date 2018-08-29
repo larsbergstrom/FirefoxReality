@@ -561,6 +561,7 @@ public class SessionStore implements GeckoSession.NavigationDelegate, GeckoSessi
         try (FileOutputStream out = new FileOutputStream(prefFileName)) {
             out.write("pref(\"dom.vr.enabled\", true);\n".getBytes());
             out.write("pref(\"dom.vr.external.enabled\", true);\n".getBytes());
+            out.write("pref(\"media.av1.enabled\", true);\n".getBytes());
             out.write("pref(\"webgl.enable-surface-texture\", true);\n".getBytes());
             out.write("pref(\"apz.allow_double_tap_zooming\", false);\n".getBytes());
         } catch (FileNotFoundException e) {
