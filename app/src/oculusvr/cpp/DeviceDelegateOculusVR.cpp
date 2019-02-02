@@ -23,6 +23,7 @@
 
 #include <vector>
 #include <cstdlib>
+#include <sched.h>
 #include <unistd.h>
 #include <VrApi_Types.h>
 
@@ -1149,6 +1150,19 @@ DeviceDelegateOculusVR::EnterVR(const crow::BrowserEGLContext& aEGLContext) {
     vrapi_SetClockLevels(m.ovr, 4, 4);
     vrapi_SetPerfThread(m.ovr, VRAPI_PERF_THREAD_TYPE_MAIN, gettid());
     vrapi_SetPerfThread(m.ovr, VRAPI_PERF_THREAD_TYPE_RENDERER, gettid());
+
+    // Restrict Firefox Reality to run on only the two big / fast CPU cores.
+    // TODO: perform different per-device configuration
+
+    // TODO: clarify:
+    // 1) CPU_SET calls correctly for individual processors
+    // 2) If 0 & 1 are the "big" cores
+    // 3) if sched_setaffinity's first argument (tid) is 0 or -1 for "all"
+    cpu_set_t cpus;
+    CPU_ZERO(&cpus);
+    CPU_SET(0, &cpus);
+    CPU_SET(1, &cpus);
+    sched_setaffinity(0, sizeof(cpus), &cpus);
   }
 
   // Reset reorientation after Enter VR
